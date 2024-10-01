@@ -5,3 +5,32 @@ date: "2024-10-01"
 output: github_document
 ---
 
+```{r}
+library(tidyverse)
+library(dplyr)
+library(readxl)
+library(haven)
+```
+
+
+## Problem 1
+
+```{r}
+nyc_transit = 
+  read_csv("Homework2_data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv",
+           na = c("NA", "", ".")) |> 
+  janitor::clean_names() |> 
+  select(line, station_name, station_latitude, station_longitude, starts_with("route"), entry, vending, entrance_type, ada) |> 
+  mutate(entry = if_else(entry == "YES", 1, 0))
+```
+
+The dataset `nyc_transit` contains `line`, `station_name`, `station_latitude`, `entry`, `vending`, `entrance_type`, `ada`, and all the routes served.
+
+One variable named `entry`, originally contained the values "YES" and "NO" to indicate whether an entrance allows entry, which has been changed into numeric values where "YES" is replaced with 1 and "NO" is replaced with 0.
+
+The cleaning steps so far include renaming the variables name, making them into lowercase with underscores instead of space and only retain those useful variables for analysis and exclude other variables.
+
+The dimension of the resulting dataset includes 1868 rows and 32 columns.
+
+The data are tidy because columns are variables and observations are on the row. 
+
