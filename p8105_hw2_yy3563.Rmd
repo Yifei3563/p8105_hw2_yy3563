@@ -34,3 +34,60 @@ The dimension of the resulting dataset includes 1868 rows and 32 columns.
 
 The data are tidy because columns are variables and observations are on the row. 
 
+### Answering three questions
+
+```{r}
+nrow(distinct(nyc_transit, station_name, line))
+```
+
+There are 465 distinct stations.
+
+```{r}
+ada_compliant = nyc_transit |> 
+  filter(ada == "TRUE") |> 
+  distinct(station_name, line) |> 
+  nrow()
+```
+
+84 stations are ADA compliant.
+
+```{r}
+proportion = nyc_transit |> 
+  filter(entry == 1) |> 
+  summarise(proportion = mean(vending == "NO"))
+```
+
+The proportion of station entrances / exits without vending allow entrance is 0.0394.
+
+### Reformat data so that route number and route name are distinct variables.
+
+```{r}
+nyc_transit = nyc_transit |> 
+  mutate(across(starts_with("route"), as.character))
+
+nyc_transit_new = nyc_transit |> 
+  pivot_longer(cols = starts_with("route"),
+               names_to = "route_number",
+               values_to = "route_name")
+```
+
+```{r}
+station_serving_A = nyc_transit_new |> 
+  filter(route_name == "A") |> 
+  distinct(station_name, line) |> 
+  nrow()
+```
+
+There are 60 distinct stations serve the A train.
+
+```{r}
+ada_station_serving_A = nyc_transit_new |> 
+  filter(route_name == "A", ada == "TRUE") |> 
+  distinct(station_name, line) |> 
+  nrow()
+```
+
+Of the stations that serve the A train, 17 of them are ADA compliant.
+
+
+
