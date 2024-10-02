@@ -139,4 +139,53 @@ The total weight of trash collected by Professor Trash Wheel is
 The total number of cigarette butts collected by Gwynnda in June of 2022 is `r sum(gwynnda_trash_wheel$cigarette_butts[gwynnda_trash_wheel$year == 2022 & gwynnda_trash_wheel$month == "June"], na.rm = TRUE)`
 
 
+## Problem 3
+
+```{r}
+bakers = 
+  read_csv("Homework2_data/gbb_datasets/bakers.csv", na = c("NA", "", ".")) |> 
+  janitor::clean_names() |> 
+  mutate(baker_name = word(baker_name, 1))
+
+bakes = 
+  read_csv("Homework2_data/gbb_datasets/bakes.csv", na = c("NA", "", ".")) |> 
+  janitor::clean_names() |> 
+  rename(baker_name = baker)
+
+results = 
+  read_csv("Homework2_data/gbb_datasets/results.csv", na = c("NA", "", "."), 
+           skip = 2) |> 
+  janitor::clean_names() |> 
+  rename(baker_name = baker)
+```
+
+#### Check for completeness
+```{r}
+summary(bakers)
+summary(bakes)
+summary(results)
+```
+
+```{r}
+anti_join(bakers, bakes, by = "baker_name")
+anti_join(bakers, results, by = "baker_name")
+anti_join(results, bakes, by = "baker_name")
+```
+
+```{r}
+merged_data = left_join(bakers, bakes, by = c("baker_name", "series"))
+final_data = left_join(bakers, bakes, by = c("baker_name", "series"))
+```
+
+```{r}
+final_data = pivot_wider(final_data,
+  names_from = episode,
+  values_from = c(signature_bake, show_stopper)
+)
+```
+
+### Export the result as CSV
+```{r}
+write_csv(final_data, "Homework2_data/gbb_datasets/final_data.csv") 
+```
 
