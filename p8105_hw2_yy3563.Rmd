@@ -113,5 +113,30 @@ gwynnda_trash_wheel =
   janitor::clean_names()
 ```
 
+```{r}
+mr_trash_wheel = mr_trash_wheel |> 
+  mutate(trash_wheel = "Mr. Trash Wheel") |> 
+  mutate(year = as.character(year))
+
+professor_trash_wheel = professor_trash_wheel |> 
+  mutate(trash_wheel = "Professor Trash Wheel") |> 
+  mutate(year = as.character(year))
+
+gwynnda_trash_wheel = gwynnda_trash_wheel |> 
+  mutate(trash_wheel = "Gwynnda Trash Wheel") |> 
+  mutate(year = as.character(year))
+
+combined_trash_wheel = bind_rows(mr_trash_wheel, professor_trash_wheel, gwynnda_trash_wheel)
+```
+
+There are `r nrow(combined_trash_wheel)` observations in the resulting dataset, which is combined data from data from `mr_trash_wheel`, `professor_trash_wheel`, and `gwynnda_trash_wheel`.
+
+Key variables include `dumpster`, `weight_tons`, `cigarette_butts`, `glass_bottles`, `plastic_bags`, `wrappers`, and `sports_balls`.
+
+The total weight of trash collected by Professor Trash Wheel is
+`r sum(professor_trash_wheel$weight_tons, na.rm = TRUE)` tons.
+
+The total number of cigarette butts collected by Gwynnda in June of 2022 is `r sum(gwynnda_trash_wheel$cigarette_butts[gwynnda_trash_wheel$year == 2022 & gwynnda_trash_wheel$month == "June"], na.rm = TRUE)`
+
 
 
